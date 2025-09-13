@@ -224,7 +224,10 @@ const Features: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
                         <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                          <mainFeatures[activeFeature].icon className="w-6 h-6 text-white" />
+                          {(() => {
+                            const CurrentIcon = mainFeatures[activeFeature].icon;
+                            return <CurrentIcon className="w-6 h-6 text-white" />;
+                          })()}
                         </div>
                         <div>
                           <h4 className="text-white font-bold text-lg">{mainFeatures[activeFeature].title}</h4>
