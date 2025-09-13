@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Check, Zap, Crown, Star } from 'lucide-react';
+import { Check, Zap, Crown, Star, Plus } from 'lucide-react';
 
 const Pricing: React.FC = () => {
   const [isAnnual, setIsAnnual] = useState(false);
@@ -9,53 +9,72 @@ const Pricing: React.FC = () => {
     {
       name: 'Starter',
       description: 'Perfect for small teams getting started',
-      monthlyPrice: 29,
-      annualPrice: 290,
+      monthlyPrice: 15,
+      annualPrice: 144,
       features: [
-        'Up to 5 agents',
-        '1,000 conversations/month',
+        'Up to 2 agents',
+        '1 inbox',
         'Email & chat support',
-        'Basic reporting',
+        'Limited reporting',
         'Mobile apps',
-        'API access'
+        'Standard support'
       ],
       popular: false,
       icon: Zap,
       gradient: 'from-blue-500 to-cyan-500'
     },
     {
-      name: 'Professional',
+      name: 'Growth',
       description: 'Best for growing businesses',
-      monthlyPrice: 79,
-      annualPrice: 790,
+      monthlyPrice: 49,
+      annualPrice: 470,
       features: [
-        'Up to 25 agents',
-        '10,000 conversations/month',
-        'Priority support',
-        'Advanced analytics',
-        'Custom integrations',
+        'Up to 5 agents',
+        '3 inboxes',
+        'Basic reporting',
+        'Standard support',
         'Team collaboration',
-        'Automation rules',
-        'Custom branding'
+        'Automation workflows',
+        'Custom attributes',
+        'API access'
       ],
       popular: true,
       icon: Crown,
       gradient: 'from-purple-500 to-pink-500'
     },
     {
+      name: 'Agency',
+      description: 'For agencies and larger teams',
+      monthlyPrice: 99,
+      annualPrice: 950,
+      features: [
+        'Up to 15 agents',
+        '10 inboxes',
+        'Advanced reporting',
+        'Priority support',
+        'Custom branding',
+        'Advanced automation',
+        'Integrations',
+        'Team management'
+      ],
+      popular: false,
+      icon: Star,
+      gradient: 'from-green-500 to-blue-500'
+    },
+    {
       name: 'Enterprise',
       description: 'For large organizations',
-      monthlyPrice: 199,
-      annualPrice: 1990,
+      monthlyPrice: 299,
+      annualPrice: 2900,
       features: [
         'Unlimited agents',
-        'Unlimited conversations',
-        'Dedicated support',
-        'Custom reporting',
+        'Unlimited inboxes',
+        'Full reporting suite',
+        'Priority support',
         'SSO integration',
         'Advanced security',
         'Custom workflows',
-        'White-label solution'
+        'Dedicated success manager'
       ],
       popular: false,
       icon: Star,
@@ -63,6 +82,26 @@ const Pricing: React.FC = () => {
     }
   ];
 
+  const addons = [
+    {
+      name: 'Extra Agent',
+      price: 8,
+      description: 'Add additional agents to your plan',
+      unit: 'per agent/month'
+    },
+    {
+      name: 'Extra Inbox',
+      price: 12,
+      description: 'Add more communication channels',
+      unit: 'per inbox/month'
+    },
+    {
+      name: 'WhatsApp API',
+      price: 29,
+      description: 'Enable WhatsApp Business integration',
+      unit: 'per month'
+    }
+  ];
   return (
     <section id="pricing" className="py-24 bg-gradient-to-br from-gray-50 via-white to-blue-50 relative overflow-hidden">
       {/* Animated Background Elements */}
@@ -75,10 +114,10 @@ const Pricing: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-16 animate-fade-in-up">
           <h2 className="text-5xl font-bold text-gray-900 mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Simple, Transparent Pricing
+            Chatwoot Pricing Plans
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Choose the perfect plan for your team. All plans include our core features with no hidden fees.
+            Choose the perfect Chatwoot plan for your team. All plans include core features with no hidden fees.
           </p>
           
           {/* Pricing Toggle */}
@@ -104,7 +143,7 @@ const Pricing: React.FC = () => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto mb-20">
           {plans.map((plan, index) => {
             const Icon = plan.icon;
             const price = isAnnual ? plan.annualPrice : plan.monthlyPrice;
@@ -185,13 +224,45 @@ const Pricing: React.FC = () => {
           })}
         </div>
 
+        {/* Add-ons Section */}
+        <div className="max-w-4xl mx-auto mb-16">
+          <h3 className="text-3xl font-bold text-center text-gray-900 mb-12 animate-fade-in-up">
+            Add-ons & Extensions
+          </h3>
+          
+          <div className="grid md:grid-cols-3 gap-6">
+            {addons.map((addon, index) => (
+              <div
+                key={addon.name}
+                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-100"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mb-4">
+                  <Plus className="w-6 h-6 text-white" />
+                </div>
+                
+                <h4 className="text-xl font-bold text-gray-900 mb-2">{addon.name}</h4>
+                <p className="text-gray-600 mb-4">{addon.description}</p>
+                
+                <div className="flex items-baseline mb-4">
+                  <span className="text-2xl font-bold text-gray-900">${addon.price}</span>
+                  <span className="text-gray-600 ml-2 text-sm">{addon.unit}</span>
+                </div>
+                
+                <button className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium">
+                  Add to Plan
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
         {/* Bottom CTA */}
         <div className="text-center mt-16 animate-fade-in-up" style={{ animationDelay: '800ms' }}>
           <p className="text-gray-600 mb-6">
-            Need a custom solution? We'd love to help you find the perfect fit.
+            Need help choosing the right plan? We'd love to help you find the perfect Chatwoot setup.
           </p>
           <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
-            Contact Sales
+            Get Your Chatwoot Account
           </button>
         </div>
       </div>
