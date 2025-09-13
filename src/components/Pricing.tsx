@@ -1,9 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Check, Zap, Crown, Star, Plus } from 'lucide-react';
+import CheckoutPopup from './CheckoutPopup';
+
+interface CheckoutData {
+  priceId: string;
+  planName: string;
+  planPrice: number;
+  billingCycle: 'monthly' | 'annual';
+  isAddon: boolean;
+}
 
 const Pricing: React.FC = () => {
   const [isAnnual, setIsAnnual] = useState(false);
   const [hoveredPlan, setHoveredPlan] = useState<number | null>(null);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [checkoutData, setCheckoutData] = useState<CheckoutData | null>(null);
+
+  const handlePlanCheckout = (plan: typeof plans[0]) => {
+    console.log('Button clicked for plan:', plan.name);
+    const priceId = isAnnual ? plan.annualPriceId : plan.monthlyPriceId;
+    const price = isAnnual ? plan.annualPrice : plan.monthlyPrice;
+    
+    const newCheckoutData = {
+      priceId,
+      planName: plan.name,
+      planPrice: price,
+      billingCycle: isAnnual ? 'annual' : 'monthly' as 'monthly' | 'annual',
+      isAddon: false
+    };
+    
+    setCheckoutData(newCheckoutData);
+    setShowCheckout(true);
+    console.log('Checkout popup should now be visible');
+  };
+
+  const handleAddonCheckout = (addon: typeof addons[0]) => {
+    console.log('Addon button clicked for:', addon.name);
+    setCheckoutData({
+      priceId: addon.priceId,
+      planName: addon.name,
+      planPrice: addon.price,
+      billingCycle: 'monthly',
+      isAddon: true
+    });
+    setShowCheckout(true);
+  };
+
+  const handleCloseCheckout = () => {
+    setShowCheckout(false);
+    setCheckoutData(null);
+  };
 
   const plans = [
     {
@@ -11,6 +57,8 @@ const Pricing: React.FC = () => {
       description: 'Perfect for small teams getting started',
       monthlyPrice: 15,
       annualPrice: 144,
+      monthlyPriceId: 'price_1S6w7N2FauQgnPqa9NJjsiuJ',
+      annualPriceId: 'price_1S6w7S2FauQgnPqarwQsT4P1',
       features: [
         'Up to 2 agents',
         '1 inbox',
@@ -28,6 +76,8 @@ const Pricing: React.FC = () => {
       description: 'Best for growing businesses',
       monthlyPrice: 49,
       annualPrice: 470,
+      monthlyPriceId: 'price_1S6w7d2FauQgnPqaxTGJ5V8H',
+      annualPriceId: 'price_1S6w7i2FauQgnPqaG09v6qMS',
       features: [
         'Up to 5 agents',
         '3 inboxes',
@@ -47,6 +97,8 @@ const Pricing: React.FC = () => {
       description: 'For agencies and larger teams',
       monthlyPrice: 99,
       annualPrice: 950,
+      monthlyPriceId: 'price_1S6w7u2FauQgnPqa4rSns2pz',
+      annualPriceId: 'price_1S6w7z2FauQgnPqa7D7pKNRW',
       features: [
         'Up to 15 agents',
         '10 inboxes',
@@ -66,6 +118,8 @@ const Pricing: React.FC = () => {
       description: 'For large organizations',
       monthlyPrice: 299,
       annualPrice: 2900,
+      monthlyPriceId: 'price_1S6w892FauQgnPqaiPQ1c2Dt',
+      annualPriceId: 'price_1S6w8F2FauQgnPqa98reQZur',
       features: [
         'Unlimited agents',
         'Unlimited inboxes',
@@ -86,18 +140,21 @@ const Pricing: React.FC = () => {
     {
       name: 'Extra Agent',
       price: 8,
+      priceId: 'price_1S6w8X2FauQgnPqaWIQzOjQx',
       description: 'Add additional agents to your plan',
       unit: 'per agent/month'
     },
     {
       name: 'Extra Inbox',
       price: 12,
+      priceId: 'price_1S6w8h2FauQgnPqaASl4UkZt',
       description: 'Add more communication channels',
       unit: 'per inbox/month'
     },
     {
       name: 'WhatsApp API',
       price: 29,
+      priceId: 'price_1S6w8t2FauQgnPqaf4oPT8q6',
       description: 'Enable WhatsApp Business integration',
       unit: 'per month'
     }
@@ -206,7 +263,14 @@ const Pricing: React.FC = () => {
                     ))}
                   </ul>
 
-                  <button className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
+                  <button 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('Direct button click detected');
+                      handlePlanCheckout(plan);
+                    }}
+                    className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg cursor-pointer relative z-10 ${
                     plan.popular
                       ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600'
                       : 'bg-gray-900 text-white hover:bg-gray-800'
@@ -216,7 +280,7 @@ const Pricing: React.FC = () => {
                 </div>
 
                 {/* Hover Effect Overlay */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${plan.gradient} opacity-0 transition-opacity duration-300 ${
+                <div className={`absolute inset-0 bg-gradient-to-br ${plan.gradient} opacity-0 transition-opacity duration-300 pointer-events-none ${
                   hoveredPlan === index ? 'opacity-5' : ''
                 }`}></div>
               </div>
@@ -249,7 +313,15 @@ const Pricing: React.FC = () => {
                   <span className="text-gray-600 ml-2 text-sm">{addon.unit}</span>
                 </div>
                 
-                <button className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium">
+                <button 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Addon button click detected');
+                    handleAddonCheckout(addon);
+                  }}
+                  className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium cursor-pointer relative z-10"
+                >
                   Add to Plan
                 </button>
               </div>
@@ -264,8 +336,39 @@ const Pricing: React.FC = () => {
           <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
             Get Your Chatwoot Account
           </button>
+          
+          {/* Test button for debugging */}
+          <button 
+            onClick={() => {
+              console.log('Test button clicked - forcing popup');
+              setCheckoutData({
+                priceId: 'test_price_id',
+                planName: 'Test Plan',
+                planPrice: 99,
+                billingCycle: 'monthly',
+                isAddon: false
+              });
+              setShowCheckout(true);
+            }}
+            className="ml-4 bg-red-500 text-white px-4 py-2 rounded cursor-pointer"
+          >
+            TEST POPUP
+          </button>
         </div>
       </div>
+      
+      {/* Checkout Popup */}
+      {checkoutData && (
+        <CheckoutPopup
+          isOpen={showCheckout}
+          onClose={handleCloseCheckout}
+          priceId={checkoutData.priceId}
+          planName={checkoutData.planName}
+          planPrice={checkoutData.planPrice}
+          billingCycle={checkoutData.billingCycle}
+          isAddon={checkoutData.isAddon}
+        />
+      )}
     </section>
   );
 };
